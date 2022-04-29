@@ -1,0 +1,150 @@
+---
+title: "Data Wrangling with Tidyverse"
+author: "Amanda Franklin"
+date: "27/04/2022"
+output: html_document
+self_contained: yes
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../docs") })
+---
+
+## Introduction
+
+
+
+## Setup
+
+First we need to load packages and the dataset. If you are working in the R
+project, the below code should work with no errors. If you aren't, you will need
+to change the code to refer to the correct directory with the data.
+
+```{r load packages, message=FALSE}
+library(tidyverse)
+dat <- read.csv("../data/datawrangling/datawrangling1.csv")
+```
+
+Now let's look at the dataset
+
+```{r data1}
+head(dat)
+str(dat)
+
+```
+
+Oooof. It is not tidy. Let's get to cleaning it up.
+
+## Edit Column Names
+
+You will notice some of the column names have extra spaces at the end (you can
+tell from the extra full stops). Use `rename()` to remove the extra full stop
+from `Meral.Measured.` and `White.included.`
+
+```{r edit column names}
+
+
+
+```
+
+## Edit cells
+
+Even in the first 6 lines of code (from the `head()` command) you may have 
+noticed some inconsistencies. For example, `Meral.Measured` includes `y` and 
+`Y` and the `Colour` column might not have consistent variable names.  
+  
+Let's check!
+
+```{r data2}
+dat %>% 
+  dplyr::select(Meral.Measured, Colour) %>%  # Select the columns of interest
+  mutate_all(as.factor) %>%  # Convert to factor so we can see the levels
+  map(levels) # View levels for each column
+
+```
+Boooooo Amanda. Very inconsistent. Your task is to use `mutate` and `case_when()` 
+to change the entries in the `Colour` column to `Green`, `Sandy` or `Brown`. For
+this exercise, put `Browny/green` as `NA`.
+
+Also use `mutate` and `toupper` and `str_trim` to clean up `Meral.Measured`
+
+```{r edit cells}
+
+
+
+
+# Let's Check
+
+dat2 %>% #Note I created a new dataset called dat2, you may need to change this
+  dplyr::select(Meral.Measured, Colour) %>%  # Select the columns of interest
+  mutate_all(as.factor) %>%  # Convert to factor so we can see the levels
+  map(levels) 
+
+```
+
+Yay! Ok let's move on to some other Tidyverse commands.
+
+## Summarise data
+
+Often you may want to quickly look or create a summary of your dataframe. For 
+example, you  might want to calculate means and standard deviations for each
+treatment or group in your dataset. This is easy with `group_by` and 
+`summarise`.
+
+So, let's give it a go! Calculate: 1) mean length, 2) sd (length) and 3) number 
+of observations for each colour group.   
+  
+Extra task - remove the NAs from the grouping variable so they aren't included
+in your summary table.
+
+```{r summarise data}
+
+
+
+```
+
+
+## Long vs Wide Dataset
+
+Sometimes, we have our dataset in long format and we need it in wide format, or
+vice-versa. What do I mean by this? Imagine you have taken multiple measurements
+from one individual on consecutive days. You could have one row per individual, 
+and each measurement in separate columns like this:
+
+```{r wide data}
+
+dat_wide <- read.csv("../data/datawrangling/datawrangling2.csv")
+head(dat_wide)
+
+```
+
+This is known as wide data. Long data would be if you had multiple rows for each
+individual, a column indicating day number and then a column indicating the 
+value for each day.
+
+Your task is to turn the above dataframe into a long dataframe using 
+`pivot_longer`. And then turn it back to a wide dataframe used `pivot_wider`
+
+```{r pivot longer}
+
+
+
+```
+
+## Merge Dataframes
+
+Sometimes you might have two dataframes that you need to combine together. For
+example, maybe you collected two different types of data (e.g. spec data and
+behavioural data) and have these data in two different spreadsheets. If this is
+the case, you just need a unique identifier to merge the two dataframes 
+together.
+
+In our case, we have ID in both `dat` and `dat_long`. Your task is to merge
+together these two datasets using `inner_join`. This will associate the length,
+widtch and colour data with the values in the data_long dataset. You will
+end up with 3 rows for each ID.
+
+```{r merging}
+
+
+
+```
+
